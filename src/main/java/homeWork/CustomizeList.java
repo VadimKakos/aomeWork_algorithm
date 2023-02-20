@@ -18,27 +18,63 @@ public class CustomizeList implements StringList {
 
     @Override
     public String add(String item) {
-        return null;
+        validateSize();
+        validateItem(item);
+        storage[size++] = item;
+        return item;
     }
 
     @Override
     public String add(int index, String item) {
-        return null;
+        validateSize();
+        validateItem(item);
+        validateIndex(index);
+        if (index == size) {
+            storage[size++] = item;
+            return item;
+        }
+        System.arraycopy(storage, index, storage, index + 1, size - index);
+        storage[index] = item;
+        size++;
+        return item;
     }
 
     @Override
     public String set(int index, String item) {
-        return null;
+        validateIndex(index);
+        validateItem(item);
+        storage[index] = item;
+        return item;
     }
 
     @Override
     public String remove(String item) {
-        return null;
+        validateItem(item);
+
+        int index = indexOf(item);
+
+        if (index == -1) {
+            throw new ElementNotFoundExceptio();
+        }
+
+        if (index != size) {
+            System.arraycopy(storage, index + 1, storage, index, size - index);
+        }
+        size--;
+        return item;
     }
 
     @Override
     public String remove(int index) {
-        return null;
+        validateIndex(index);
+
+        String item = storage[index];
+
+        if (index != size) {
+            System.arraycopy(storage, index + 1, storage, index, size - index);
+        }
+        size--;
+        return item;
     }
 
     @Override
@@ -68,7 +104,8 @@ public class CustomizeList implements StringList {
 
     @Override
     public String get(int index) {
-        return null;
+        validateIndex(index);
+        return storage[index];
     }
 
     @Override
@@ -83,7 +120,7 @@ public class CustomizeList implements StringList {
 
     @Override
     public boolean isEmpty() {
-        return size==0;
+        return size == 0;
     }
 
     @Override
