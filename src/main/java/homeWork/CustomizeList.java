@@ -1,9 +1,8 @@
 package homeWork;
 
 import java.util.Arrays;
-import java.util.InvalidPropertiesFormatException;
 
-public class CustomizeList implements StringList {
+public class CustomizeList implements IntegerList {
 
     private final String[] storage;
     private int size;
@@ -17,37 +16,73 @@ public class CustomizeList implements StringList {
     }
 
     @Override
-    public String add(String item) {
-        return null;
+    public Integer add(Integer item) {
+        validateSize();
+        validateItem(item);
+        storage[size++] = String.valueOf(item);
+        return item;
     }
 
     @Override
-    public String add(int index, String item) {
-        return null;
+    public Integer add(int index, Integer item) {
+        validateSize();
+        validateItem(item);
+        validateIndex(index);
+        if (index == size) {
+            storage[size++] = String.valueOf(item);
+            return item;
+        }
+        System.arraycopy(storage, index, storage, index + 1, size - index);
+        storage[index] = String.valueOf(item);
+        size++;
+        return item;
     }
 
     @Override
-    public String set(int index, String item) {
-        return null;
+    public Integer set(int index, Integer item) {
+        validateIndex(index);
+        validateItem(item);
+        storage[index] = String.valueOf(item);
+        return item;
     }
 
     @Override
-    public String remove(String item) {
-        return null;
+    public Integer remove(Integer item) {
+        validateItem(item);
+
+        int index = indexOf(item);
+
+        if (index == -1) {
+            throw new ElementNotFoundExceptio();
+        }
+
+        if (index != size) {
+            System.arraycopy(storage, index + 1, storage, index, size - index);
+        }
+        size--;
+        return item;
     }
 
     @Override
-    public String remove(int index) {
-        return null;
+    public Integer remove(int index) {
+        validateIndex(index);
+
+        Integer item = Integer.valueOf(storage[index]);
+
+        if (index != size) {
+            System.arraycopy(storage, index + 1, storage, index, size - index);
+        }
+        size--;
+        return item;
     }
 
     @Override
-    public boolean contains(String item) {
+    public boolean contains(Integer item) {
         return indexOf(item) != -1;
     }
 
     @Override
-    public int indexOf(String item) {
+    public int indexOf(Integer item) {
         for (int i = 0; i < size; i++) {
             if (storage[i].equals(item)) {
                 return i;
@@ -57,7 +92,7 @@ public class CustomizeList implements StringList {
     }
 
     @Override
-    public int lastIndexOf(String item) {
+    public int lastIndexOf(Integer item) {
         for (int i = size - 1; i >= 0; i--) {
             if (storage[i].equals(item)) {
                 return i;
@@ -68,11 +103,12 @@ public class CustomizeList implements StringList {
 
     @Override
     public String get(int index) {
-        return null;
+        validateIndex(index);
+        return storage[index];
     }
 
     @Override
-    public boolean equals(StringList otherList) {
+    public boolean equals(IntegerList otherList) {
         return Arrays.equals(this.toArray(), otherList.toArray());
     }
 
@@ -83,7 +119,7 @@ public class CustomizeList implements StringList {
 
     @Override
     public boolean isEmpty() {
-        return size==0;
+        return size == 0;
     }
 
     @Override
@@ -96,7 +132,7 @@ public class CustomizeList implements StringList {
         return Arrays.copyOf(storage, size);
     }
 
-    private void validateItem(String item) {
+    private void validateItem(Integer item) {
         if (item == null) {
             throw new NullItemException();
         }
